@@ -7,6 +7,7 @@ import pyqtgraph as pg
 # from odesf import eq_to_pyfunc
 from ode_parser import func_from_string
 from ode import *
+import os
 
 __AVAILABLE_SOLVERS__ = [ForwardEuler(), ForwardEulerCromer(), RungeKutta4(), RungeKuttaFehlberg(), BackwardEuler()]
 
@@ -111,11 +112,16 @@ class Solver(QWidget):
         eq_str = eq_str.split(";")
         eq_ls = [eq for eq in eq_str if len(eq) > 2]
 
+
         co_str = self.constant_edit.toPlainText().replace("\n", "")
         co_str = co_str.split(";")
-        co_ls = [c for c in co_str if len(c) > 2]
+        if co_str:
+            co_ls = [c for c in co_str if len(c) > 2]
+            func, dep_dict, indep_dict = func_from_string(equations=eq_ls, constants=co_ls)
 
-        func, dep_dict, indep_dict = func_from_string(equations=eq_ls, constants=co_ls)
+        else:
+            func, dep_dict, indep_dict = func_from_string(equations=eq_ls)
+
         self.dep_dict = dep_dict
         self.indep_dict = indep_dict
         self.dep_ls = list(dep_dict.values())
@@ -128,7 +134,9 @@ class Solver(QWidget):
         solver_idx = self.solver_method.currentIndex()
         solver = __AVAILABLE_SOLVERS__[solver_idx]
         name_solver = solver.__class__.__name__
-        self.info_form.addRow('Solver Method: ', QLabel(f"{name_solver}"))
+
+        if len(_ivp) != _n:
+            self.info_form.addRow('InitialValue Error: ', QLabel(f"Initial value dimension < {len(_ivp)} > do not equal to equation number < {_n} >"))
 
         solver.init(a=_a, b=_b, h=_h, ivp=_ivp, func=func, n=_n)
         solver.solve()
@@ -136,6 +144,7 @@ class Solver(QWidget):
         self.plot_t = solver.x
         self.plot_y = solver.y
 
+        self.info_form.addRow('Solver Method: ', QLabel(f"{name_solver}"))
         self.info_form.addRow('Solving Steps: ', QLabel(f"{solver.x.shape[0] - 1}"))
 
         var_data_dict = {}
