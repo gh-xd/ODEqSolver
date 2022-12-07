@@ -12,7 +12,7 @@ One enters equations and constants with the separation of `;`, set the condition
 
 ### Example 1 - Solving lorenz equations using RKF
 
-![solver](./assets/example1.png)
+![solver](./assets/example1_1200.png)
 
 ### 
 
@@ -24,13 +24,13 @@ The sketch of the mechanical system is shown in picture below. The simple system
 
 The picture below illustrates the relation of time to general displacements of springs (k1-k4). For example, the general displacement q4 means the tension/compression of spring k4, etc.
 
-![solver](./assets/example2.png)
+![solver](./assets/example2_1200.png)
 
 ### Example 3 - Some stiff equations using RKF
 
 As the coefficient A, B, C, D imposes the equation with some "quick change" character (like depicted below), the equation performs "stiff". Adaptive step solvers deals with sudden changes very "careful" with small step size.
 
-![solver](./assets/example3.png)
+![solver](./assets/example3_1200.png)
 
 
 
